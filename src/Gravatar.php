@@ -18,20 +18,24 @@ use Webloper\Gravatar\Exception\InvalidFormatException;
 
 class Gravatar
 {
+    /** @var string */
     private $base_url = 'http://www.gravatar.com/';
 
+    /** @var string */
     private $base_url_secure = 'https://secure.gravatar.com/';
 
+    /** @var array */
     private $options = [];
 
-    protected $email_hash = null;
+    /** @var string */
+    protected $email_hash = 'null';
 
     /**
      * Constructor
      *
      * @param string email
      **/
-    public function __construct($email = null)
+    public function __construct(string $email = null)
     {
         if (is_null($email)) {
             throw new EmailRequiredException();
@@ -39,7 +43,7 @@ class Gravatar
 
         $email = strtolower(trim($email));
 
-        if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw new InvalidEmailException();
         }
 
@@ -53,23 +57,21 @@ class Gravatar
      * @param  string extension for image file
      * @return string url of the gravatar
      **/
-    public function url($secure = false, $extension = null)
+    public function url(bool $secure = false, string $extension = null)
     {
-        $result = '';
-
         if ($secure) {
             $result = $this->base_url_secure;
         } else {
             $result = $this->base_url;
         }
 
-        if (! is_null($extension) && in_array($extension, ['jpg', 'png'])) {
+        if (!is_null($extension) && in_array($extension, ['jpg', 'png'])) {
             $result .= 'avatar/' . $this->email_hash . '.' . $extension;
         } else {
             $result .= 'avatar/' . $this->email_hash;
         }
 
-        if (! empty($this->options)) {
+        if (!empty($this->options)) {
             $result .= '?' . http_build_query($this->options);
         }
 
@@ -83,14 +85,12 @@ class Gravatar
      * @param  bool true if secure else false
      * @return string url of the gravatar with html img tag
      **/
-    public function img($attrs = [], $secure = false)
+    public function img(array $attrs = [], bool $secure = false)
     {
         $result = '<img src="' . $this->url($secure) . '"';
 
-        if (is_array($attrs)) {
-            foreach ($attrs as $key => $val) {
-                $result .= ' ' . $key . '="' . $val . '"';
-            }
+        foreach ($attrs as $key => $val) {
+            $result .= ' ' . $key . '="' . $val . '"';
         }
         $result .= ' />';
 
@@ -103,12 +103,12 @@ class Gravatar
      * @param  string format supported php, json, qr, vcf, and xml
      * @return mixed
      **/
-    public function profile($format = 'php')
+    public function profile(string $format = 'php')
     {
         $format = strtolower(trim($format));
         $default_format = ['json', 'xml', 'php', 'vcf', 'qr'];
 
-        if (! in_array($format, $default_format)) {
+        if (!in_array($format, $default_format)) {
             throw new InvalidFormatException();
         }
 
@@ -123,36 +123,27 @@ class Gravatar
 
                 return $data;
 
-                break;
-
             case 'xml':
 
                 return simplexml_load_string(file_get_contents($this->base_url . $this->email_hash . '.' . $format));
-
-                break;
 
             case 'php':
 
                 return unserialize(file_get_contents($this->base_url . $this->email_hash . '.' . $format));
 
-                break;
-
             case 'vcf':
 
                 return $this->base_url . $this->email_hash . '.' . $format;
 
-                break;
-
             case 'qr':
 
                 $result = $this->base_url . $this->email_hash . '.' . $format;
-                if (! empty($this->options)) {
+
+                if (!empty($this->options)) {
                     $result .= '?' . http_build_query($this->options);
                 }
 
                 return $result;
-
-                break;
         }
     }
 
@@ -160,9 +151,9 @@ class Gravatar
      * __call
      *
      * @param string method name
-     * @param mixed parameters
+     * @param array arguments
      **/
-    public function __call($method, $arguments)
+    public function __call(string $method, array $arguments)
     {
         $default_methods = ['setSize', 'setRating', 'setDefault', 'setForceDefault'];
 
@@ -185,7 +176,7 @@ class Gravatar
 
                     $this->options['f'] = $arguments[0];
 
-                    // no break
+                // no break
                 case 'setDefault':
 
                     $this->options['d'] = urlencode($arguments[0]);
