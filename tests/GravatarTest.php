@@ -10,7 +10,7 @@ class GravatarTest extends TestCase
     /** @test */
     public function it_can_convert_email_to_gravatar()
     {
-        $email = 'webloper@gmail.com';
+        $email = 'webloper@gmails.com';
 
         $this->gravatar = new Gravatar($email);
 

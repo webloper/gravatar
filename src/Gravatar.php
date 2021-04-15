@@ -43,7 +43,7 @@ class Gravatar
 
         $email = strtolower(trim($email));
 
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw new InvalidEmailException();
         }
 
@@ -65,13 +65,13 @@ class Gravatar
             $result = $this->base_url;
         }
 
-        if (!is_null($extension) && in_array($extension, ['jpg', 'png'])) {
+        if (! is_null($extension) && in_array($extension, ['jpg', 'png'])) {
             $result .= 'avatar/' . $this->email_hash . '.' . $extension;
         } else {
             $result .= 'avatar/' . $this->email_hash;
         }
 
-        if (!empty($this->options)) {
+        if (! empty($this->options)) {
             $result .= '?' . http_build_query($this->options);
         }
 
@@ -108,7 +108,7 @@ class Gravatar
         $format = strtolower(trim($format));
         $default_format = ['json', 'xml', 'php', 'vcf', 'qr'];
 
-        if (!in_array($format, $default_format)) {
+        if (! in_array($format, $default_format)) {
             throw new InvalidFormatException();
         }
 
@@ -139,7 +139,7 @@ class Gravatar
 
                 $result = $this->base_url . $this->email_hash . '.' . $format;
 
-                if (!empty($this->options)) {
+                if (! empty($this->options)) {
                     $result .= '?' . http_build_query($this->options);
                 }
 
